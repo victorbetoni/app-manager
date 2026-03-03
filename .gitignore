@@ -1,0 +1,6 @@
+config.json
+.idea
+.vscode
+**/.pem
+*.pem
+go.sum

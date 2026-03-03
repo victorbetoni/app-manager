@@ -1,0 +1,28 @@
+{
+    "use_auth": true,
+    "use_tls": true,
+    "port": 8056,
+    "apps_json_path": "/path/to/apps.json",
+    "origins": [
+      "list.of.valid.origins.com"  
+    ],
+    "tls_cert": {
+        "public_key": "/path/to/publicKey.pem",
+        "private_key": "/path/to/privateKey.pem"
+    },
+    "jwt": {
+        "check_user_agent": true,
+        "check_ip": true,
+        "cookie_key": "jwt_cookie",
+        "claim_keys": {
+            "identifier": "identifier",
+            "admin_flag": "0or1flag",
+            "user_agent": "user_agent",
+            "ip": "ip"
+        },
+        "keys": {
+            "public_key": "/path/to/publicKey.pem",
+            "private_key": "/path/to/privateKey.pem"
+        }
+    }
+}
