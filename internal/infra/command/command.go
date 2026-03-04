@@ -5,6 +5,7 @@ import (
 	"context"
 	"io"
 	"os/exec"
+	"sync"
 )
 
 type Command struct {
@@ -55,16 +56,20 @@ func (c *Command) StreamExec(ctx context.Context, ch chan<- []byte) error {
 		return err
 	}
 
+	var wg sync.WaitGroup
+	wg.Add(2)
+
 	processPipe := func(r io.Reader) {
+		defer wg.Done()
 		scanner := bufio.NewScanner(r)
 		for scanner.Scan() {
 			line := scanner.Bytes()
+
 			b := make([]byte, len(line))
 			copy(b, line)
 
 			select {
 			case <-ctx.Done():
-				close(ch)
 				return
 			case ch <- b:
 			}
@@ -76,6 +81,7 @@ func (c *Command) StreamExec(ctx context.Context, ch chan<- []byte) error {
 
 	go func() {
 		_ = cmd.Wait()
+		wg.Wait()
 		close(ch)
 	}()
 
