@@ -27,10 +27,16 @@ func (p ProcessLogs) Process(ctx context.Context, output chan model.Message, app
 		return
 	}
 	for data := range ch {
-		output <- model.Message{
+		msg := model.Message{
 			Error:     false,
 			Timestamp: time.Now().Unix(),
 			Message:   string(data),
+		}
+
+		select {
+		case <-ctx.Done():
+			return
+		case output <- msg:
 		}
 	}
 
